@@ -35,18 +35,21 @@ function getURLsFromHTML(htmlBody, baseURL) {
     return all_links
 }
 
+async function crawlPage(currentURL) {
+    let response
+    try {
+        response = await fetch(currentURL)
+        console.log(response.status)    
+    } catch (error) {
+        throw new Error(error.message)
+    }
+    if (response.status >= 400){
+        throw new Error(response.statusText)
+    } else if (response.headers.get("content-type").split(";")[0] != "text/html") {
+        console.log(response.headers.get("content-type"))
+        throw new Error("Incorrect content type. Needs to be text/html")
+    }
+    console.log(await response.text())
+}
 
-
-getURLsFromHTML(`<html>
-<body>
-    <a href="https://blog.boot.dev"><span>Go to Boot.dev</span></a>
-    <a href="https://news.boot.dev"><span>Go to news section</span></a>
-    <div>
-        <div>
-            <a href="https://test.dev"><span>Go to fake site</span></a>
-        </div>
-    </div>
-</body>
-</html>`, "https://blog.boot.dev")
-
-export { normalizeURL, getURLsFromHTML };
+export { normalizeURL, getURLsFromHTML, crawlPage };
