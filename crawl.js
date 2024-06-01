@@ -2,7 +2,6 @@ import {JSDOM} from 'jsdom'
 
 function normalizeURL(urlString) {
     const urlObj = new URL(urlString);
-    console.log(urlObj)
     let pathName = urlObj.pathname
     if (pathName.slice(-1) === "/") {
         pathName = pathName.slice(0, pathName.length - 1)
@@ -14,7 +13,6 @@ function normalizeURL(urlString) {
         base = base.slice(4);
     }
     const normalizedURL = base + pathName + search + hash
-    console.log(normalizedURL)
     return normalizedURL.toLowerCase()
 }
 
@@ -24,14 +22,12 @@ function getURLsFromHTML(htmlBody, baseURL) {
     const all_links = []
     for (const node of link_nodes) {
         const link = node.href
-        console.log(link)
         if (link.startsWith("/")) {
             all_links.push(`${baseURL}${link}`)
         } else {
             all_links.push(link.slice(0, link.length - 1))
         }
     }
-    console.log(all_links)
     return all_links
 }
 
@@ -39,19 +35,17 @@ async function getURLContent(currentURL) {
     let response
     try {
         response = await fetch(currentURL);
-        console.log(response.status);    
     } catch (error) {
         console.log(`Got an error: ${error.message}`);
         return null
     }
     if (response.status >= 400){
-        console.log(Error(response.statusText))
+        console.log(response.statusText)
         return null
     }
     const contentType = response.headers.get("content-type");
     if (!contentType || contentType.split(";")[0] != "text/html") {
-        console.log(response.headers.get("content-type"));
-        console.log(Error("Incorrect content type. Needs to be text/html"));
+        console.log("Incorrect content type. Needs to be text/html");
         return null
     }
     const content = await response.text()
@@ -60,7 +54,6 @@ async function getURLContent(currentURL) {
 
 async function crawlPage(baseURL, currentURL=baseURL, pages={}) {
     const baseURLObj = new URL(baseURL);
-    console.log(`Crawling this URL next: ${currentURL}`)
     let currentURLObj
     try {
         currentURLObj = new URL(currentURL);
@@ -79,11 +72,9 @@ async function crawlPage(baseURL, currentURL=baseURL, pages={}) {
     }
     const currentURLBody = await getURLContent(currentURL);
     const listOfURLs = getURLsFromHTML(currentURLBody, baseURL);
-    console.log(`This is the current list of URLS : ${listOfURLs}`)
     for (const url of listOfURLs) {
         pages = await crawlPage(baseURL, url, pages)
     }
-    console.log(pages)
     return pages
 
 }
