@@ -1,18 +1,3 @@
-function sort(array){
-    let swapping = true;
-    let end = sortedPages.length;
-    while (swapping) {
-        swapping = false;
-        for ( let i = 1; i < sortedPages.length; i++) {
-            if (sortedPages[i - 1][1] < sortedPages[i][1]) {
-                sortedPages[i-1], sortedPages[i] = sortedPages[i], sortedPages[i-1]
-                swapping = true;
-            }
-        }
-    }
-    
-}
-
 function printReport(pages){
     console.log("Report is starting....")
     
@@ -29,7 +14,6 @@ function printReport(pages){
         }
         sortedPages[lastIndex + 1] = currentPage;
     }
-    // console.log(sortedPages);
     sortedPages.forEach( page => {
         const url = page[0];
         const count = page[1];
